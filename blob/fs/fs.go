@@ -17,21 +17,36 @@ type FS struct {
 	Basepath string
 }
 
+func (fs *FS) fileName(name string) string {
+	return filepath.Join(fs.Basepath, name)
+}
+
 func (fs *FS) Get(name string) (io.ReadCloser, error) {
-	name = filepath.Join(fs.Basepath, name)
-	file, err := os.Open(name)
+	file, err := os.OpenFile(fs.fileName(name), os.O_RDONLY, 0644)
+
 	if errAs := (&os.PathError{}); errors.As(err, &errAs) {
 		return nil, fmt.Errorf("%w: %v", blob.ErrNotFound, err)
 	}
+
 	return file, err
 }
 
 func (fs *FS) Set(name string, data io.Reader) error {
-	return nil
+	file, err := os.OpenFile(fs.fileName(name),
+		os.O_WRONLY | os.O_TRUNC | os.O_CREATE ,
+		0644)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = io.Copy(file, data)
+
+	return err
 }
 
 func (fs *FS) Del(name string) error {
-	return nil
+	return os.Remove(fs.fileName(name))
 }
 
 func (fs *FS) Stat(name string) (blob.Info, error) {
