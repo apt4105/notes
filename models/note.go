@@ -12,6 +12,6 @@ type Note struct {
 
 type Collaboration struct {
 	NoteID              int32
-	Principal           User
+	UserID           *int32
 	Read, Write, Delete bool
 }

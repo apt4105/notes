@@ -2,6 +2,7 @@ package data
 
 import "github.com/apt4105/notes/models"
 
+
 type Store interface {
 	// user methods
 	UserByID(userID int32) (*models.User, error)
