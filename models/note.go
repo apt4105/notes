@@ -15,3 +15,4 @@ type Collaboration struct {
 	UserID           *int32
 	Read, Write, Delete bool
 }
+
